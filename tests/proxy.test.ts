@@ -1,8 +1,6 @@
 /// tests/proxy.test.ts
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
-import { NextURL } from "next/dist/server/web/next-url";
-import { NextResponse } from "next/server";
 import { proxy } from "../proxy";
 
 function createRequest(path: string, cookies: Record<string, string> = {}) {

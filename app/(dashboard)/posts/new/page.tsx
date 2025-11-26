@@ -97,7 +97,7 @@ export default function NewPostPage() {
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-4"
-              id="new-post-form"
+              id="post-form"
             >
               <FormField
                 control={form.control}
@@ -145,9 +145,9 @@ export default function NewPostPage() {
         <CardFooter>
           <Button
             type="submit"
-            id="new-post-form"
+            form="post-form"
             disabled={form.formState.isSubmitting}
-            className="w-full"
+            className="w-full hover:cursor-pointer"
           >
             {form.formState.isSubmitting ? "Creando post..." : "Crear post"}
           </Button>

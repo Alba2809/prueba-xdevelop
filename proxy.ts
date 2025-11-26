@@ -11,6 +11,11 @@ export async function proxy(req: NextRequest) {
 
   const { pathname } = req.nextUrl;
 
+  // HACER /login la ruta por defecto
+  if (pathname === "/") {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
   // RUTAS PÚBLICAS
   const isLoginRoute = pathname.startsWith("/login");
   const isPublicRoute = ROUTES.PUBLICS.some((route) =>
