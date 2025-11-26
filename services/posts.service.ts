@@ -8,13 +8,31 @@ export interface Post {
   body: string;
 }
 
+export interface Comment {
+  id: number;
+  email: string;
+  body: string;
+  postId: number;
+  name: string;
+}
+
 export async function getPosts() {
   const res = await api.get<Post[]>(`${API_POSTS}/posts`);
   return res.data;
 }
 
-export async function getPost(id: string) {
+export async function getPost(id: number) {
   const res = await api.get<Post>(`${API_POSTS}/posts/${id}`);
+  return res.data;
+}
+
+export async function getComments(id: number) {
+  const res = await api.get<Comment[]>(`${API_POSTS}/posts/${id}/comments`);
+  return res.data;
+}
+
+export async function getPostsByUser(userId: number) {
+  const res = await api.get<Post[]>(`${API_POSTS}/posts?userId=${userId}`);
   return res.data;
 }
 
@@ -23,12 +41,11 @@ export async function createPost(data: {
   body: string;
   userId: number;
 }) {
-  console.log("Enviando post: ", data)
   const res = await api.post<Post>(`${API_POSTS}/posts`, data);
   return res.data;
 }
 
-export async function updatePost(id: string, data: Partial<Post>) {
+export async function updatePost(id: number, data: Partial<Post>) {
   const res = await api.put<Post>(`${API_POSTS}/posts/${id}`, data);
   return res.data;
 }

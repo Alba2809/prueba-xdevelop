@@ -23,7 +23,7 @@ import {
   Card,
   CardFooter,
 } from "@/components/ui/card";
-import { postSchema, PostSchema } from "./schema";
+import { postSchema, PostSchema } from "../schemas/schema";
 import { useAuthStore } from "@/stores/auth.store";
 import { validateSchema } from "@/utils/validateSchema";
 import { Textarea } from "@/components/ui/textarea";
@@ -44,9 +44,8 @@ export default function NewPostPage() {
   });
 
   const onSubmit = async (data: PostSchema) => {
-    //simular login con timeout
     try {
-      console.log("Validando datos")
+      console.log("Validando datos");
       // validar datos con zod
       const parsed = validateSchema(postSchema, data);
 
@@ -58,7 +57,7 @@ export default function NewPostPage() {
         userId: Number(userId),
       };
 
-      console.log("Creando post")
+      console.log("Creando post");
       createPost.mutate(payload, {
         onSuccess: () => {
           toast.success("Post creado exitosamente");
@@ -66,7 +65,7 @@ export default function NewPostPage() {
           // Se simula que el post se guardo en la base de datos. Para ello, se guarda de forma local en zustand
           const post = {
             id: Date.now(),
-            ...payload
+            ...payload,
           };
 
           addPost(post); // se agrega al estado de zustand
@@ -74,7 +73,7 @@ export default function NewPostPage() {
           router.push("/posts"); // se redirige a la lista de posts
         },
         onError: (err) => {
-          console.log("Error al crear post", err)
+          console.log("Error al crear post", err);
           toast.error("Error al crear post");
         },
       });
@@ -98,7 +97,7 @@ export default function NewPostPage() {
             <form
               onSubmit={form.handleSubmit(onSubmit)}
               className="space-y-4"
-              id="login-form"
+              id="new-post-form"
             >
               <FormField
                 control={form.control}
@@ -146,7 +145,7 @@ export default function NewPostPage() {
         <CardFooter>
           <Button
             type="submit"
-            form="login-form"
+            id="new-post-form"
             disabled={form.formState.isSubmitting}
             className="w-full"
           >

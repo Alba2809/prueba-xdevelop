@@ -5,4 +5,4 @@ export function getAccessToken() {
   return match ? match[1] : null;
 }
 
-export const refreshTokenTime = 1000 * 60 * 1;
+export const refreshTokenTime = 1000 * 60 * 10;

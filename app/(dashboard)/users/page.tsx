@@ -14,7 +14,7 @@ import LoaderSpin from "@/components/common/LoaderSpin";
 
 export default function UsersPage() {
   const [page, setPage] = useState(1);
-  const { data, isLoading } = useUsersQuery(page);
+  const { data, isLoading, error } = useUsersQuery(page);
   const [users, setUsers] = useState<User[]>(() => []);
   const [rowSelection, setRowSelection] = useState({});
   const [deletedUsersIds, setDeletedUsersIds] = useState<number[]>([]); // para simular persistencia en la eliminación de usuarios
@@ -117,6 +117,10 @@ export default function UsersPage() {
   }
 
   if (isLoading) return <LoaderSpin />;
+
+  if (error) {
+    toast.error("Error al cargar usuarios.");
+  }
 
   return (
     <>

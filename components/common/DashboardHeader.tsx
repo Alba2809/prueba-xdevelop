@@ -61,7 +61,7 @@ export default function DashboardHeader() {
   }, []);
 
   return (
-    <div className="w-full flex items-center justify-center mb-5 sticky top-0 z-100 bg-background/95">
+    <div className="w-full flex items-center justify-center mb-5 sticky top-0 z-10 bg-background/95">
       <NavigationMenu viewport={isMobile} className="space-x-5 py-3">
         <NavigationMenuList className="flex-wrap">
           {components

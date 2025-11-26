@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/table";
 import { UsersPagination } from "./UsersPagination";
 import { ROLES } from "@/utils/constants";
+import Link from "next/link";
 
 export type User = {
   id: number;
@@ -149,6 +150,14 @@ export function UsersTable({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                <DropdownMenuItem className="">
+                  <Link
+                    href={`/posts/user/${user.id}`}
+                    className="size-full flex items-center justify-start"
+                  >
+                    Ver posts
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() => {
                     // obtener los usuarios seleccionados
@@ -164,6 +173,7 @@ export function UsersTable({
 
                     onChangeRole(selectedUsers);
                   }}
+                  className="hover:cursor-pointer"
                 >
                   Cambiar rol
                 </DropdownMenuItem>
@@ -184,6 +194,7 @@ export function UsersTable({
                     onDelete(selectedUsers);
                   }}
                   variant="destructive"
+                  className="hover:cursor-pointer"
                 >
                   Eliminar
                 </DropdownMenuItem>

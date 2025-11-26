@@ -13,6 +13,7 @@ interface PostsState {
   addPost: (post: LocalPost) => void;
   favoritePosts: number[];
   addFavoritePost: (postId: number) => void;
+  updatePost: (id: number, post: Partial<LocalPost>) => void;
 }
 
 export const usePostsStore = create<PostsState>()(
@@ -38,6 +39,12 @@ export const usePostsStore = create<PostsState>()(
           }));
         }
       },
+      updatePost: (id, updated) =>
+        set((state) => ({
+          localPosts: state.localPosts.map((p) =>
+            p.id === id ? { ...p, ...updated } : p
+          ),
+        })),
     }),
     {
       name: "posts-store",
