@@ -1,17 +1,35 @@
 import { create } from "zustand";
 
 interface AuthState {
-  user: any | null;
   role: "admin" | "user" | null;
-  setUser: (user: any) => void;
-  logout: () => void;
+  accessToken: string | null;
+  userId: number | null;
+
+  setRole: (role: "admin" | "user") => void;
+  setAccessToken: (token: string) => void;
+  setUserId: (id: number) => void;
+
+  isAdmin: () => boolean;
+
+  // setUser: (user: any) => void;
+  clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
+export const useAuthStore = create<AuthState>((set, get) => ({
   role: null,
+  accessToken: null,
+  userId: null,
 
-  setUser: (user) => set({ user }),
+  setRole: (role) => set({ role }),
+  setAccessToken: (accessToken) => set({ accessToken }),
+  setUserId: (userId) => set({ userId }),
 
-  logout: () => set({ user: null, role: null }),
+  isAdmin: () => get().role === "admin",
+
+  clearAuth: () =>
+    set({
+      role: null,
+      accessToken: null,
+      userId: null,
+    }),
 }));

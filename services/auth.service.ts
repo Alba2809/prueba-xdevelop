@@ -1,5 +1,6 @@
 import axios from "axios";
 import { api } from "./http";
+import { useAuthStore } from "@/stores/auth.store";
 
 export interface LoginPayload {
   email: string;
@@ -17,6 +18,8 @@ export async function loginRequest(credentials: LoginPayload) {
         },
       }
     );
+
+    // lo idea sería guardar aquí los datos en zustand, pero se realiza en el action para simularlo
 
     return { ok: true, token: data.token };
   } catch (error: any) {
@@ -36,7 +39,7 @@ export async function loginRequest(credentials: LoginPayload) {
 
 export async function refreshAccessToken() {
   try {
-    console.log("Refrescando token")
+    console.log("Refrescando token");
     const res = await axios.post("/api/auth/refresh");
 
     if (!res.data.accessToken) {
@@ -52,6 +55,27 @@ export async function refreshAccessToken() {
   } catch (error) {
     return {
       ok: false,
+    };
+  }
+}
+
+export async function logoutRequest() {
+  try {
+    // aqui se debería realizar la petición para cerrar sesión
+    await api.post("/api/auth/logout");
+
+    // en su lugar, se simulará el logout eliminando los datos de zustand y eliminando el token
+    useAuthStore.getState().clearAuth();
+
+    return {
+      ok: true,
+      message: "Sesión cerrada",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      ok: false,
+      message: "Error al cerrar sesión",
     };
   }
 }

@@ -79,7 +79,11 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="usario123@gmail.com" {...field} />
+                      <Input
+                        placeholder="usario123@gmail.com"
+                        {...field}
+                        disabled={form.formState.isSubmitting}
+                      />
                     </FormControl>
                     <FormMessage>
                       {form.formState.errors.email?.message}
@@ -95,7 +99,12 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <Input
+                        type="password"
+                        placeholder="******"
+                        {...field}
+                        disabled={form.formState.isSubmitting}
+                      />
                     </FormControl>
                     <FormMessage>
                       {form.formState.errors.password?.message}

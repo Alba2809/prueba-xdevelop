@@ -5,6 +5,8 @@ import { LoginPayload, loginRequest } from "@/services/auth.service";
 import { validateSchema } from "@/utils/validateSchema";
 import { loginSchema } from "./schema";
 import { refreshTokenTime } from "@/utils/cookies";
+import { useAuthStore } from "@/stores/auth.store";
+import { deriveUserIdFromToken } from "@/utils/user";
 
 export async function loginAction(data: LoginPayload) {
   try {
@@ -21,37 +23,11 @@ export async function loginAction(data: LoginPayload) {
       });
     }
 
-    const cookieStore = await cookies();
-
-    // varias de las cookies se guardan de forma directa y plana
-
-    // guardar accessToken
-    cookieStore.set("accessToken", result.token, {
-      httpOnly: false,
-      sameSite: "lax",
-      secure: false,
-      path: "/",
-    });
-
-    // guardar refresh token simulado
-    const expiresAt = String(Date.now() + refreshTokenTime);
-    cookieStore.set("refreshToken", expiresAt, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: true,
-      path: "/",
-    });
-
-    // simulación del role según correo
-    // emails que empiezan por admin son admin
+    // se asigna el rol aleatorio
     const role = data.email.startsWith("admin") ? "admin" : "user";
 
-    cookieStore.set("role", role, {
-      httpOnly: false,
-      sameSite: "lax",
-      secure: false,
-      path: "/",
-    });
+    // se crean las cookies
+    await createCookies(result.token, role);
 
     return {
       ok: true,
@@ -64,4 +40,51 @@ export async function loginAction(data: LoginPayload) {
       error: error.message || "Error inesperado",
     };
   }
+}
+
+export async function createCookies(token: string, role: "admin" | "user") {
+  const cookieStore = await cookies();
+  // varias de las cookies se guardan de forma directa y plana
+
+  // guardar accessToken
+  cookieStore.set("accessToken", token, {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: false,
+    path: "/",
+  });
+
+  // guardar refresh token simulado
+  const expiresAt = String(Date.now() + refreshTokenTime);
+  cookieStore.set("refreshToken", expiresAt, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: true,
+    path: "/",
+  });
+
+  // simulación del role según correo
+  // emails que empiezan por admin son admin
+
+  cookieStore.set("role", role, {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: false,
+    path: "/",
+  });
+
+  // userId simulado
+  const userId = deriveUserIdFromToken(token);
+
+  cookieStore.set("userId", String(userId), {
+    httpOnly: false,
+    sameSite: "lax",
+    secure: false,
+    path: "/",
+  });
+
+  // guardar datos en zustand
+  useAuthStore.getState().setAccessToken(token);
+  useAuthStore.getState().setUserId(userId);
+  useAuthStore.getState().setRole(role);
 }

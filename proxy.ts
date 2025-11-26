@@ -1,11 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { ROLES, ROUTES } from "./utils/constants";
 import { refreshTokenTime } from "./utils/cookies";
-import axios from "axios";
+import { deriveUserIdFromToken } from "./utils/user";
 
 export async function proxy(req: NextRequest) {
   const token = req.cookies.get("accessToken")?.value ?? null;
   const expiresAt = req.cookies.get("refreshToken")?.value ?? null;
+  const userId = req.cookies.get("userId")?.value ?? null;
   const role = req.cookies.get("role")?.value ?? null;
 
   const { pathname } = req.nextUrl;
@@ -48,8 +49,6 @@ export async function proxy(req: NextRequest) {
   if (token && expiresAt) {
     const now = Date.now();
     const exp = Number(expiresAt);
-    console.log(now);
-    console.log(exp);
     // Token expirado
     if (now > exp) {
       console.log("Token expirado", now, exp);
@@ -57,11 +56,12 @@ export async function proxy(req: NextRequest) {
         // Intentar refrescar el token
         // La petición solo estpa de forma representativa
         // const refreshRes = await axios.post("/api/auth/refresh");
+        // ya que aqui se deberia realizar la petición a la API de Auth para refrescar el token
         const refreshRes = {
           status: 200,
           statusText: "OK",
           data: () => ({
-            accessToken: "NEW_TOKEN",
+            accessToken: String(now),
           }),
         };
 
@@ -86,7 +86,7 @@ export async function proxy(req: NextRequest) {
           secure: false,
           path: "/",
         });
-        const newExpiresAt = String(Date.now() + refreshTokenTime);
+        const newExpiresAt = String(data.accessToken + refreshTokenTime);
         resp.cookies.set("refreshToken", newExpiresAt, {
           httpOnly: true,
           sameSite: "lax",
@@ -103,10 +103,28 @@ export async function proxy(req: NextRequest) {
         resp.cookies.delete("accessToken");
         resp.cookies.delete("refreshToken");
         resp.cookies.delete("role");
+        resp.cookies.delete("userId");
 
         return resp;
       }
     }
+
+  }
+  
+  // SI EXISTE TOKEN, pero NO EXISTE userId, asignarlo
+  if (token && !userId) {
+    const newUserId = deriveUserIdFromToken(token);
+    console.log("Asignando userId:", newUserId);
+
+    const resp = NextResponse.next();
+    resp.cookies.set("userId", String(newUserId), {
+      httpOnly: false,
+      sameSite: "lax",
+      secure: false,
+      path: "/",
+    });
+
+    return resp;
   }
 
   return NextResponse.next();

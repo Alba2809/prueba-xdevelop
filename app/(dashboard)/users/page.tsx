@@ -7,7 +7,7 @@ import {
   updateUsersRoles,
   useAssignRoles,
 } from "@/services/users.service";
-import { DataTableDemo, User } from "./components/TestTable";
+import { UsersTable, User } from "./components/UsersTable";
 import CustomAlertDialog from "@/components/common/CustomAlertDialog";
 import { toast } from "sonner";
 import LoaderSpin from "@/components/common/LoaderSpin";
@@ -120,7 +120,7 @@ export default function UsersPage() {
 
   return (
     <>
-      <DataTableDemo
+      <UsersTable
         data={users as User[]}
         isLoading={isLoading}
         totalPages={data?.total_pages ?? 0}
