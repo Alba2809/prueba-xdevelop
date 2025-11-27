@@ -155,7 +155,9 @@ export default function BooksPage() {
               )}
             />
 
-            <Button type="submit">Buscar</Button>
+            <Button type="submit" disabled={isFetching}>
+              {isFetching ? "Cargando..." : "Buscar"}
+            </Button>
           </form>
         </Form>
       </Card>
@@ -208,7 +210,7 @@ export default function BooksPage() {
 
       {!data && !isFetching && !isFetchingNextPage && (
         <div className="text-center py-10 text-muted-foreground">
-          Sin resultados. Ajusta los filtros y vuelve a intentar 2.
+          Sin resultados. Ajusta los filtros y vuelve a intentar.
         </div>
       )}
     </div>
