@@ -19,7 +19,10 @@ export default function BookCard({
 }) {
   const imageUrl = book.cover_i ? `${BOOKS_COVER}/${book.cover_i}-S.jpg` : null;
   return (
-    <Card className="w-full max-w-sm gap-3 hover:cursor-pointer hover:bg-accent transition-colors duration-200 ease-in-out" onClick={onClickCard}>
+    <Card
+      className="w-full max-w-sm gap-3 hover:cursor-pointer hover:bg-accent transition-colors duration-200 ease-in-out"
+      onClick={onClickCard}
+    >
       {" "}
       {/* // opción para que se ajuste al contenido */}
       <CardHeader className="">
@@ -30,11 +33,18 @@ export default function BookCard({
       </CardHeader>
       <CardContent className="flex-1 flex flex-col items-center justify-center gap-2">
         {/* Imagen */}
-        {imageUrl ? (
-          <img src={imageUrl} alt="cover" width={200} loading="lazy" />
-        ) : (
-          <Image />
-        )}
+        <div className="w-[200px] aspect-2/3 bg-muted rounded-md overflow-hidden">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="cover"
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <Image />
+          )}
+        </div>
         <CardDescription>{book.first_publish_year}</CardDescription>
       </CardContent>
     </Card>
