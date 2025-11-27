@@ -46,11 +46,11 @@ export default function UserPostsPage() {
 
   return (
     <div>
-      <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+      <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance mb-5">
         Posts del usuario {userId}
       </h1>
 
-      <div className="w-full flex flex-wrap gap-5 items-center justify-between">
+      <div className="w-full flex flex-wrap gap-5 justify-between">
         {allPosts?.length === 0 && (
           <div className="text-center text-accent-foreground">
             No hay posts de este usuario...

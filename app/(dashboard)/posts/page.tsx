@@ -58,7 +58,7 @@ export default function PostPage() {
         )}
       </div>
 
-      <div className="w-full flex flex-wrap gap-5 items-center justify-between">
+      <div className="w-full flex flex-wrap gap-5 justify-between">
         {/* Por ahora, se muestran los posts usando flex, pero lo mejor (visualmente) sería usar grid */}
         {/* <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 place-items-center"> */}
         {allPosts?.map((post) => (
