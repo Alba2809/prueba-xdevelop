@@ -34,18 +34,7 @@ export default function ScrollToTop() {
     <Button
       onClick={scrollToTop}
       variant="secondary"
-      className="
-        fixed 
-        bottom-6 
-        right-6 
-        rounded-full 
-        p-3 
-        shadow-lg 
-        transition-opacity
-        animate-in 
-        fade-in 
-        duration-300
-      "
+      className="fixed bottom-6 right-6 rounded-full p-3 shadow-lg transition-opacity animate-in fade-in duration-300"
       aria-label="Volver arriba"
     >
       <ArrowUp className="w-5 h-5" />

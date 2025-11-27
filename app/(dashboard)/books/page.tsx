@@ -104,7 +104,7 @@ export default function BooksPage() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 size-full">
       <h1 className="text-3xl font-bold text-center">Buscador de Libros</h1>
       {/* Sheet Modal para detalles */}
       <BookDetailsSheet open={open} book={book} setOpen={setOpen} />
@@ -171,17 +171,25 @@ export default function BooksPage() {
       {data && (
         <>
           {data.pages?.length > 0 && data.pages[0].books?.length > 0 ? (
-            <div className="flex flex-wrap justify-between gap-5 mb-5">
-              {data.pages.map((page: any) =>
-                page.books.map((book: any) => (
-                  <BookCard
-                    key={book.key}
-                    book={book}
-                    onClickCard={() => handleViewDetails(book)}
-                  />
-                ))
+            <>
+              <div className="flex flex-wrap justify-between gap-5 mb-5">
+                {data.pages.map((page: any) =>
+                  page.books.map((book: any) => (
+                    <BookCard
+                      key={book.key}
+                      book={book}
+                      onClickCard={() => handleViewDetails(book)}
+                    />
+                  ))
+                )}
+              </div>
+              {!hasNextPage && (
+                <div className="text-center py-10 text-muted-foreground">
+                  ¿No encontraste lo que buscabas? Intenta modificando los
+                  filtros.
+                </div>
               )}
-            </div>
+            </>
           ) : (
             <div className="text-center py-10 text-muted-foreground">
               Sin resultados. Ajusta los filtros y vuelve a intentar.
@@ -200,14 +208,7 @@ export default function BooksPage() {
 
       {!data && !isFetching && !isFetchingNextPage && (
         <div className="text-center py-10 text-muted-foreground">
-          Sin resultados. Ajusta los filtros y vuelve a intentar.
-        </div>
-      )}
-
-      {/* Si ya se ha cargado todas las páginas, mostrar un mensaje de búsqueda */}
-      {data && !hasNextPage && (
-        <div className="text-center py-10 text-muted-foreground">
-          ¿No encontraste lo que buscabas? Intenta modificando los filtros.
+          Sin resultados. Ajusta los filtros y vuelve a intentar 2.
         </div>
       )}
     </div>
