@@ -228,7 +228,7 @@ export function UsersTable({
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between py-4">
+      <div className="flex flex-wrap items-center justify-between py-4 gap-3">
         <Input
           placeholder="Filtrar por emails..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -238,11 +238,10 @@ export function UsersTable({
           className="max-w-sm"
         />
 
-        <div className="space-x-4">
-          {/* Filtro por coolumna */}
+        <div className="flex flex-row items-center justify-start flex-1 gap-3">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+            <DropdownMenuTrigger asChild className="grow md:max-w-[122px] lg:max-w-40">
+              <Button variant="outline">
                 Columnas <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
@@ -269,8 +268,8 @@ export function UsersTable({
 
           {/* Filtro por roles */}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
+            <DropdownMenuTrigger asChild className="grow md:max-w-[122px] lg:max-w-40">
+              <Button variant="outline">
                 Filtrar por... <ChevronDown />
               </Button>
             </DropdownMenuTrigger>
@@ -298,6 +297,7 @@ export function UsersTable({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+          {/* Filtro por coolumna */}
         </div>
       </div>
       <div className="overflow-hidden rounded-md border">
