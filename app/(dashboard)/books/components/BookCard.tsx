@@ -33,7 +33,7 @@ export default function BookCard({
       </CardHeader>
       <CardContent className="flex-1 flex flex-col items-center justify-center gap-2">
         {/* Imagen */}
-        <div className="w-[200px] aspect-2/3 bg-muted rounded-md overflow-hidden">
+        <div className="w-[200px] aspect-2/3 bg-muted rounded-md overflow-hidden flex justify-center items-center">
           {imageUrl ? (
             <img
               src={imageUrl}

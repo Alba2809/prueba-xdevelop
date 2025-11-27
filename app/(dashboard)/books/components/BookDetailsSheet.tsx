@@ -55,9 +55,15 @@ export default function BookDetailsSheet({ open, setOpen, book }: Props) {
               <AccordionItem value="item-2">
                 <AccordionTrigger>Lenguajes disponibles</AccordionTrigger>
                 <AccordionContent className="flex flex-wrap gap-4 text-balance">
-                  {book.language.map((lang) => (
-                    <SheetDescription key={lang}>{lang}</SheetDescription>
-                  ))}
+                  {book.language ? (
+                    book.language.map((lang) => (
+                      <SheetDescription key={lang}>{lang}</SheetDescription>
+                    ))
+                  ) : (
+                    <SheetDescription>
+                      Sin lenguajes disponibles.
+                    </SheetDescription>
+                  )}
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

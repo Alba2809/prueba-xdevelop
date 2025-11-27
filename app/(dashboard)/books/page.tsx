@@ -38,26 +38,56 @@ export default function BooksPage() {
   const { filters, manualSearch } = useBooksFilters(watchedValues);
 
   // Infinite scroll con los filtros finales
-  const { data, fetchNextPage, isFetchingNextPage, isFetching } =
+  const { data, fetchNextPage, isFetchingNextPage, isFetching, hasNextPage } =
     useBooksInfinite(filters);
 
   // scroll observer
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
+    // Si no existe el sentinel en el DOM no hacemos nada
     if (!loadMoreRef.current) return;
 
+    /**
+     * IntersectionObserver callback:
+     * - Se ejecuta cuando el "sentinel" (loadMoreRef) entra/sale del viewport.
+     * - entry.isIntersecting => el sentinel es visible (o está dentro del rootMargin).
+     * - Verificamos además que no estemos ya realizando el fetch la siguiente página
+     *   (isFetchingNextPage) y que realmente exista una siguiente página (hasNextPage).
+     * - Solo entonces llamamos a fetchNextPage() para cargar más resultados.
+     */
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isFetchingNextPage) {
+        const entry = entries[0];
+
+        // Evitar fetchs redundantes: solo cuando el sentinel es visible
+        // y no estamos ya cargando ni hemos llegado al final.
+        if (entry.isIntersecting && !isFetchingNextPage && hasNextPage) {
+          // Disparar la carga de la siguiente página
           fetchNextPage();
         }
       },
-      { threshold: 1 }
+      {
+        // threshold bajo y rootMargin positivo para disparar antes y ser más confiable
+        // rootMargin positivo para "preload" (disparar antes de que el usuario llegue al final)
+        threshold: 0.1,
+        rootMargin: "200px 0px 200px 0px",
+      }
     );
 
-    observer.observe(loadMoreRef.current);
-    return () => observer.disconnect();
-  }, [fetchNextPage, isFetchingNextPage]);
+    const el = loadMoreRef.current;
+    observer.observe(el);
+
+    // Cleanup: dejar de observar cuando el componente se desmonta o cambian dependencias
+    return () => observer.unobserve(el);
+  }, [
+    fetchNextPage, // función que dispara la petición (asegurar identidad estable)
+    isFetchingNextPage, // condiciones para permitir el fetch
+    hasNextPage,
+    filters.q, // reinician el observer cuando cambian los filtros (nuevos resultados)
+    filters.author,
+    filters.year,
+  ]);
 
   // Botón Buscar
   const handleSubmit = form.handleSubmit((values) => {
@@ -76,6 +106,8 @@ export default function BooksPage() {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-3xl font-bold text-center">Buscador de Libros</h1>
+      {/* Sheet Modal para detalles */}
+      <BookDetailsSheet open={open} book={book} setOpen={setOpen} />
 
       {/* Formulario */}
       <Card className="p-4">
@@ -142,7 +174,11 @@ export default function BooksPage() {
             <div className="flex flex-wrap justify-between gap-5 mb-5">
               {data.pages.map((page: any) =>
                 page.books.map((book: any) => (
-                  <BookCard key={book.key} book={book} onClickCard={() => handleViewDetails(book)} />
+                  <BookCard
+                    key={book.key}
+                    book={book}
+                    onClickCard={() => handleViewDetails(book)}
+                  />
                 ))
               )}
             </div>
@@ -168,12 +204,12 @@ export default function BooksPage() {
         </div>
       )}
 
-      {/* Sheet Modal para detalles */}
-      <BookDetailsSheet
-        open={open}
-        book={book}
-        setOpen={setOpen}
-      />
+      {/* Si ya se ha cargado todas las páginas, mostrar un mensaje de búsqueda */}
+      {data && !hasNextPage && (
+        <div className="text-center py-10 text-muted-foreground">
+          ¿No encontraste lo que buscabas? Intenta modificando los filtros.
+        </div>
+      )}
     </div>
   );
 }

@@ -35,21 +35,19 @@ export async function searchBooks(params: BookSearchParams) {
   const res = await api.get(
     `${API_BOOKS}/search.json?${searchParams.toString()}&fields=title,author_name,author_key,first_publish_year,key,cover_edition_key,cover_i,language`
   );
-//   console.log(`${API_BOOKS}/search.json?${searchParams.toString()}&fields=title,author_name,author_key,first_publish_year,key,cover_edition_key,cover_i,language`)
+  // console.log(`${API_BOOKS}/search.json?${searchParams.toString()}&fields=title,author_name,author_key,first_publish_year,key,cover_edition_key,cover_i,language`)
 
   if (!res.statusText.startsWith("OK")) {
     console.log("Error al buscar libros");
     throw new Error("Error con la API de OpenLibrary");
   }
 
-  console.log(res.data.docs[0])
-
   return {
     books: res.data.docs as Book[],
     total: res.data.numFound,
-    hasMore: res.data.docs.length > 0,
     page,
     totalPages: Math.ceil(res.data.numFound / 100),
+    hasMore: page < Math.ceil(res.data.numFound / 100),
   };
 }
 
